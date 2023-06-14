@@ -1015,8 +1015,8 @@ sAddr    equ   12                       string address
          phb                            save data bank
          phk                            set up local data bank
          plb
-         ph4   sAddr                    convert string to standard form
-         ph2   sLen
+         ph4   <sAddr                   convert string to standard form
+         ph2   <sLen
          jsr   ~StringToStandard
          pl2   sLen
          pl4   sAddr
@@ -1200,7 +1200,7 @@ ext      equ   addr+4
          tdc
          adc   #ext
          pha
-         ph4   addr                     push addr of real value
+         ph4   <addr                    push addr of real value
          fx2c                           convert and move
          creturn
          end
@@ -1983,7 +1983,7 @@ gs1      phx                            get a buffer
          stx   buff+2
          ora   buff+2
          beq   err
-         ph4   r0                       save 0 page
+         ph4   <r0                      save 0 page
          move4 buff,r0                  insert the buffer into the list
          lda   ~StringList
          sta   [r0]
@@ -2603,7 +2603,7 @@ NextCh   ldy   #~flEOF
          lda   #' '
          rts
 
-nc1      ph4   filePtr
+nc1      ph4   <filePtr
          jsl   ~GetBuffer
          ldy   #~flHeader
          lda   [filePtr],Y
@@ -3099,7 +3099,7 @@ lb1      rtl                            return
          tdc
          adc   #ext
          pha
-         ph4   addr                     push addr of real value
+         ph4   <addr                    push addr of real value
          fx2c                           convert and move
          creturn
          end

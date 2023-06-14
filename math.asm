@@ -699,12 +699,6 @@ pow      start
          ph4   #t2                      t1 := t1 ** t2
          ph4   #t1
          fxpwry
-         fgetenv                        check for a range error
-         txa
-         and   #$0D00
-         beq   lb1
-         lda   #ERANGE
-         sta   >errno
 lb1      ldx   #^t1                     return a pointer to the result
          lda   #t1
          plb

@@ -1,5 +1,5 @@
-	keep	obj/fpe
-	case	on
+         keep  obj/fpe
+         case  on
 
 ****************************************************************
 *
@@ -16,5 +16,5 @@
 *
 ****************************************************************
 *
-FPE	start		dummy segment
-	end
+FPE      start                          dummy segment
+         end

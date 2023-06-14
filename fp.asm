@@ -33,8 +33,8 @@ Dummy    start
 *
 ~FPECommon privdata
 
-slot	ds	2	FPE slot number
-	end
+slot     ds    2                        FPE slot number
+         end
 
 ****************************************************************
 *
@@ -42,164 +42,164 @@ slot	ds	2	FPE slot number
 *
 *  Inputs:
 *        op1,op2: numbers
-*	A - FPE operation code
+*        A - FPE operation code
 *
 ****************************************************************
 *
 ~DoFPEBinop private
-	using	~FPECommon
-op1	equ	5	first operand
-op2	equ	15	second operand/result
+         using ~FPECommon
+op1      equ   5                        first operand
+op2      equ   15                       second operand/result
 
-command	equ	$C088	disp to the FPE command register
-operand	equ	$C08C	disp to the FPE operand register
-response equ	$C080	disp to the FPE response register
+command  equ   $C088                    disp to the FPE command register
+operand  equ   $C08C                    disp to the FPE operand register
+response equ   $C080                    disp to the FPE response register
 
-	phb		set the data bank to bank 0
-	ph2	#0
-	plb
-	plb
-	tax		save the operation
+         phb                            set the data bank to bank 0
+         ph2   #0
+         plb
+         plb
+         tax                            save the operation
 
-	lda	>FPEslot	get the slot displacelement
-	bne	fp1
-	phb
-	phk
-	plb
-	lda	slot
-	asl	A
-	asl	A
-	asl	A
-	asl	A
-	sta	FPEslot
-	ora	#command
-	sta	c1+1
-	sta	c2+1
-	sta	c3+1
-	lda	FPEslot
-	ora	#response
-	sta	lb1+1
-	sta	lb2+1
-	sta	lb3+1
-	sta	lb4+1
-	sta	lb5+1
-	sta	lb6+1
-	lda	FPEslot
-	ora	#operand
-	sta	o1+1
-	sta	o2+1
-	sta	o3+1
-	sta	o4+1
-	sta	o5+1
-	sta	o6+1
-	sta	o7+1
-	sta	o8+1
-	sta	o9+1
-	lda	FPEslot
-	ora	#operand+2
-	sta	p1+1
-	sta	p2+1
-	sta	p3+1
-	sta	p4+1
-	sta	p5+1
-	sta	p6+1
-	sta	p7+1
-	sta	p8+1
-	sta	p9+1
-	plb      
-fp1	anop     
+         lda   >FPEslot                 get the slot displacelement
+         bne   fp1
+         phb
+         phk
+         plb
+         lda   slot
+         asl   A
+         asl   A
+         asl   A
+         asl   A
+         sta   FPEslot
+         ora   #command
+         sta   c1+1
+         sta   c2+1
+         sta   c3+1
+         lda   FPEslot
+         ora   #response
+         sta   lb1+1
+         sta   lb2+1
+         sta   lb3+1
+         sta   lb4+1
+         sta   lb5+1
+         sta   lb6+1
+         lda   FPEslot
+         ora   #operand
+         sta   o1+1
+         sta   o2+1
+         sta   o3+1
+         sta   o4+1
+         sta   o5+1
+         sta   o6+1
+         sta   o7+1
+         sta   o8+1
+         sta   o9+1
+         lda   FPEslot
+         ora   #operand+2
+         sta   p1+1
+         sta   p2+1
+         sta   p3+1
+         sta   p4+1
+         sta   p5+1
+         sta   p6+1
+         sta   p7+1
+         sta   p8+1
+         sta   p9+1
+         plb      
+fp1      anop     
 
-	lda	#$0048	load the first operand
-c1	sta	command
-	lda	#$0089
-lb1	cmp	response
-	beq	lb1
-	lda	op2+8,S
-	xba
-o1	sta	operand
-	lda	#0
-p1	sta	operand+2
-	lda	op2+6,S
-	xba
-o2	sta	operand
-	lda	op2+4,S
-	xba
-p2	sta	operand+2
-	lda	op2+2,S
-	xba
-o3	sta	operand
-	lda	op2,S
-	xba
-p3	sta	operand+2
-lb2	lda	response
-	and	#$0080
-	bne	lb2
+         lda   #$0048                   load the first operand
+c1       sta   command
+         lda   #$0089
+lb1      cmp   response
+         beq   lb1
+         lda   op2+8,S
+         xba
+o1       sta   operand
+         lda   #0
+p1       sta   operand+2
+         lda   op2+6,S
+         xba
+o2       sta   operand
+         lda   op2+4,S
+         xba
+p2       sta   operand+2
+         lda   op2+2,S
+         xba
+o3       sta   operand
+         lda   op2,S
+         xba
+p3       sta   operand+2
+lb2      lda   response
+         and   #$0080
+         bne   lb2
 
-	txa		perform the operation with the 2nd operand
-c2	sta	command
-	lda	#$0089
-lb3	cmp	response
-	beq	lb3
-	lda	op1+8,S
-	xba
-o4	sta	operand
-	lda	#0
-p4	sta	operand+2
-	lda	op1+6,S
-	xba
-o5	sta	operand
-	lda	op1+4,S
-	xba
-p5	sta	operand+2
-	lda	op1+2,S
-	xba
-o6	sta	operand
-	lda	op1,S
-	xba
-p6	sta	operand+2
-lb4	lda	response
-	and	#$0080
-	bne	lb4
+         txa                            perform the operation with the 2nd operand
+c2       sta   command
+         lda   #$0089
+lb3      cmp   response
+         beq   lb3
+         lda   op1+8,S
+         xba
+o4       sta   operand
+         lda   #0
+p4       sta   operand+2
+         lda   op1+6,S
+         xba
+o5       sta   operand
+         lda   op1+4,S
+         xba
+p5       sta   operand+2
+         lda   op1+2,S
+         xba
+o6       sta   operand
+         lda   op1,S
+         xba
+p6       sta   operand+2
+lb4      lda   response
+         and   #$0080
+         bne   lb4
 
-	lda	#$0068
-c3	sta	command
-	lda	#$0089
-lb5	cmp	response
-	beq	lb5
-o7	lda	operand
-	xba
-	sta	op2+8,S
-p7	lda	operand
-o8	lda	operand
-	xba
-	sta	op2+6,S
-p8	lda	operand
-	xba
-	sta	op2+4,S
-o9	lda	operand
-	xba
-	sta	op2+2,S
-p9	lda	operand
-	xba
-	sta	op2,S
-lb6	lda	response
-	and	#$0080
-	bne	lb6
+         lda   #$0068
+c3       sta   command
+         lda   #$0089
+lb5      cmp   response
+         beq   lb5
+o7       lda   operand
+         xba
+         sta   op2+8,S
+p7       lda   operand
+o8       lda   operand
+         xba
+         sta   op2+6,S
+p8       lda   operand
+         xba
+         sta   op2+4,S
+o9       lda   operand
+         xba
+         sta   op2+2,S
+p9       lda   operand
+         xba
+         sta   op2,S
+lb6      lda   response
+         and   #$0080
+         bne   lb6
 
-	plb
-	lda	1,S
-	sta	11,S
-	lda	2,S
-	sta	12,S
-	tsc
-	clc
-	adc	#10
-	tcs
-	rtl
+         plb
+         lda   1,S
+         sta   11,S
+         lda   2,S
+         sta   12,S
+         tsc
+         clc
+         adc   #10
+         tcs
+         rtl
 ;
 ;  Local data
 ;
-FPEslot	ds	2	FPE slot displacement
+FPEslot  ds    2                        FPE slot displacement
          end
 
 ****************************************************************
@@ -207,153 +207,153 @@ FPEslot	ds	2	FPE slot displacement
 *  ~DoFPEFunction - do an FPE function
 *
 *  Inputs:
-*	A - FPE operation code
+*        A - FPE operation code
 *
 ****************************************************************
 *
 ~DoFPEFunction start
-	using	~FPECommon
+         using ~FPECommon
 
-command	equ	$C088	disp to the FPE command register
-operand	equ	$C08C	disp to the FPE operand register
-response equ	$C080	disp to the FPE response register
+command  equ   $C088                    disp to the FPE command register
+operand  equ   $C08C                    disp to the FPE operand register
+response equ   $C080                    disp to the FPE response register
 
-save	equ	$0068	op code for save of FPE0 to extended
+save     equ   $0068                    op code for save of FPE0 to extended
 
-val	equ	5	start of value on stack
+val      equ   5                        start of value on stack
 
-	phb		set up for abs addressing to bank 0
-	pea	0
-	plb
-	plb
-	pha		save the operation
-	lda	>FPEslot	get the slot displacelement
-	bne	lb1
-	phb
-	phk
-	plb
-	lda	slot
-	asl	A
-	asl	A
-	asl	A
-	asl	A
-	sta	FPEslot
-	ora	#command
-	sta	c1+1
-	sta	c2+1
-	lda	FPEslot
-	ora	#response
-	sta	lb2+1
-	sta	lb3+1
-	sta	lb4+1
-	sta	lb5+1
-	lda	FPEslot
-	ora	#operand
-	sta	o1+1
-	sta	o2+1
-	sta	o3+1
-	sta	o4+1
-	sta	o5+1
-	sta	o6+1
-	lda	FPEslot
-	ora	#operand+2
-	sta	p1+1
-	sta	p2+1
-	sta	p3+1
-	sta	p4+1
-	sta	p5+1
-	sta	p6+1
-	plb
-lb1	pla		do the operation
-c1	sta	command
-	ldx	#$0089
-lb2	cpx	response
-	beq	lb2
-	lda	val+8,S
-	xba
-o1	sta	operand
-p1	stz	operand+2
-	lda	val+6,S
-	xba
-o2	sta	operand
-	lda	val+4,S
-	xba
-p2	sta	operand+2
-	lda	val+2,S
-	xba
-o3	sta	operand
-	lda	val,S
-	xba
-p3	sta	operand+2
-lb3	lda	response
-	and	#$0080
-	bne	lb3
-	lda	#save
-c2	sta	command	save the result
-lb4	cpx	response
-	beq	lb4
-o4	lda	operand
-	xba
-	sta	>FPEresult+8
-p4	lda	operand+2
-o5	lda	operand
-	xba
-	sta	>FPEresult+6
-p5	lda	operand+2
-	xba
-	sta	>FPEresult+4
-o6	lda	operand
-	xba
-	sta	>FPEresult+2
-p6	lda	operand+2
-	xba
-	sta	>FPEresult
-lb5	lda	response
-	and	#$0080
-	bne	lb5
-	plx		remove the operand from the stack
-	ply
-	tsc
-	clc
-	adc	#10
-	tcs
-	phy
-	phx
-	plb		restore B
-	ldx	#^FPEresult	return the addr of the result
-	lda	#FPEresult
-	rtl
+         phb                            set up for abs addressing to bank 0
+         pea   0
+         plb
+         plb
+         pha                            save the operation
+         lda   >FPEslot                 get the slot displacelement
+         bne   lb1
+         phb
+         phk
+         plb
+         lda   slot
+         asl   A
+         asl   A
+         asl   A
+         asl   A
+         sta   FPEslot
+         ora   #command
+         sta   c1+1
+         sta   c2+1
+         lda   FPEslot
+         ora   #response
+         sta   lb2+1
+         sta   lb3+1
+         sta   lb4+1
+         sta   lb5+1
+         lda   FPEslot
+         ora   #operand
+         sta   o1+1
+         sta   o2+1
+         sta   o3+1
+         sta   o4+1
+         sta   o5+1
+         sta   o6+1
+         lda   FPEslot
+         ora   #operand+2
+         sta   p1+1
+         sta   p2+1
+         sta   p3+1
+         sta   p4+1
+         sta   p5+1
+         sta   p6+1
+         plb
+lb1      pla                            do the operation
+c1       sta   command
+         ldx   #$0089
+lb2      cpx   response
+         beq   lb2
+         lda   val+8,S
+         xba
+o1       sta   operand
+p1       stz   operand+2
+         lda   val+6,S
+         xba
+o2       sta   operand
+         lda   val+4,S
+         xba
+p2       sta   operand+2
+         lda   val+2,S
+         xba
+o3       sta   operand
+         lda   val,S
+         xba
+p3       sta   operand+2
+lb3      lda   response
+         and   #$0080
+         bne   lb3
+         lda   #save
+c2       sta   command                  save the result
+lb4      cpx   response
+         beq   lb4
+o4       lda   operand
+         xba
+         sta   >FPEresult+8
+p4       lda   operand+2
+o5       lda   operand
+         xba
+         sta   >FPEresult+6
+p5       lda   operand+2
+         xba
+         sta   >FPEresult+4
+o6       lda   operand
+         xba
+         sta   >FPEresult+2
+p6       lda   operand+2
+         xba
+         sta   >FPEresult
+lb5      lda   response
+         and   #$0080
+         bne   lb5
+         plx                            remove the operand from the stack
+         ply
+         tsc
+         clc
+         adc   #10
+         tcs
+         phy
+         phx
+         plb                            restore B
+         ldx   #^FPEresult              return the addr of the result
+         lda   #FPEresult
+         rtl
 ;
 ;  Local data
 ;
-FPEresult ds	10	result of an FPE function
-FPEslot	ds	2	FPE slot displacement
-	end
+FPEresult ds   10                       result of an FPE function
+FPEslot  ds    2                        FPE slot displacement
+         end
 
 ****************************************************************
 *
 *  SetFPESlot - Set the FPE slot number
 *
 *  Inputs:
-*	slot - slot number
+*        slot - slot number
 *
 ****************************************************************
 *
 SetFPESlot start
-	using	~FPECommon
+         using ~FPECommon
 
-	phb
-	phk
-	plb
-	plx
-	ply
-	pla
-	sta	slot
-	phy
-	phx
-	plb
-	rtl
-	end
+         phb
+         phk
+         plb
+         plx
+         ply
+         pla
+         sta   slot
+         phy
+         phx
+         plb
+         rtl
+         end
 
 ****************************************************************
 *
@@ -366,8 +366,8 @@ SetFPESlot start
 *
 ~AddE    start
 
-	lda	#$2248
-	brl	~DoFPEBinop
+         lda   #$2248
+         brl   ~DoFPEBinop
          end
 
 ****************************************************************
@@ -1075,7 +1075,7 @@ rts      plb
 ****************************************************************
 *
 *  ~CnvULongReal - convert an unsigned long integer into an
-*	extended SANE real
+*        extended SANE real
 *
 *  Inputs:
 *        A - integer
@@ -1112,7 +1112,7 @@ rts      plb
          rtl                            return
 
 lval     ds    4                        long value
-	dc	i4'0'	least significant bits of comp value
+         dc    i4'0'                    least significant bits of comp value
          end
 
 ****************************************************************
@@ -1161,17 +1161,17 @@ rval     equ   4
 ~CompRet2 start
 
          lda   1,S                      swap address of value
-         tax		 and return address
-         lda	2,S
-	tay
-	lda	4,S
-	sta	1,S
-	lda	6,S
-	sta	3,S
-	tya
-	sta	6,S
-	txa
-	sta	5,S
+         tax                             and return address
+         lda   2,S
+         tay
+         lda   4,S
+         sta   1,S
+         lda   6,S
+         sta   3,S
+         tya
+         sta   6,S
+         txa
+         sta   5,S
          ph4   #~RealVal                push address of extended value
          fc2x                           convert to extended
          ldx   #^~RealVal               load address of result
@@ -1217,111 +1217,111 @@ ext      equ   addr+4
 ****************************************************************
 *
 ~CopyDouble start
-	using	~FPECommon
+         using ~FPECommon
 
          csubroutine (4:addr),0
 ext      equ   addr+4
 
-command	equ	$C088	disp to the FPE command register
-operand	equ	$C08C	disp to the FPE operand register
-response equ	$C080	disp to the FPE response register
+command  equ   $C088                    disp to the FPE command register
+operand  equ   $C08C                    disp to the FPE operand register
+response equ   $C080                    disp to the FPE response register
 
-	phb		set up for abs addressing to bank 0
-	pea	0
-	plb
-	plb
-	lda	>FPEslot	get the slot displacelement
-	bne	lb1
-	phb
-	phk
-	plb
-	lda	slot
-	asl	A
-	asl	A
-	asl	A
-	asl	A
-	sta	FPEslot
-	ora	#command
-	sta	c1+1
-	sta	c2+1
-	lda	FPEslot
-	ora	#response
-	sta	lb2+1
-	sta	lb3+1
-	sta	lb4+1
-	sta	lb5+1
-	lda	FPEslot
-	ora	#operand
-	sta	o1+1
-	sta	o2+1
-	sta	o3+1
-	sta	o4+1
-	sta	o5+1
-	lda	FPEslot
-	ora	#operand+2
-	sta	p1+1
-	sta	p2+1
-	sta	p3+1
-	sta	p4+1
-	sta	p5+1
-	plb
-lb1	anop
+         phb                            set up for abs addressing to bank 0
+         pea   0
+         plb
+         plb
+         lda   >FPEslot                 get the slot displacelement
+         bne   lb1
+         phb
+         phk
+         plb
+         lda   slot
+         asl   A
+         asl   A
+         asl   A
+         asl   A
+         sta   FPEslot
+         ora   #command
+         sta   c1+1
+         sta   c2+1
+         lda   FPEslot
+         ora   #response
+         sta   lb2+1
+         sta   lb3+1
+         sta   lb4+1
+         sta   lb5+1
+         lda   FPEslot
+         ora   #operand
+         sta   o1+1
+         sta   o2+1
+         sta   o3+1
+         sta   o4+1
+         sta   o5+1
+         lda   FPEslot
+         ora   #operand+2
+         sta   p1+1
+         sta   p2+1
+         sta   p3+1
+         sta   p4+1
+         sta   p5+1
+         plb
+lb1      anop
 
-	lda	#$0048	load the extended value
-c1	sta	command
-	ldx	#$0089
-lb2	cpx	response
-	beq	lb2
-	lda	ext+8
-	xba
-o1	sta	operand
-p1	stz	operand+2
-	lda	ext+6
-	xba
-o2	sta	operand
-	lda	ext+4
-	xba
-p2	sta	operand+2
-	lda	ext+2
-	xba
-o3	sta	operand
-	lda	ext
-	xba
-p3	sta	operand+2
-lb3	lda	response
-	and	#$0080
-	bne	lb3
+         lda   #$0048                   load the extended value
+c1       sta   command
+         ldx   #$0089
+lb2      cpx   response
+         beq   lb2
+         lda   ext+8
+         xba
+o1       sta   operand
+p1       stz   operand+2
+         lda   ext+6
+         xba
+o2       sta   operand
+         lda   ext+4
+         xba
+p2       sta   operand+2
+         lda   ext+2
+         xba
+o3       sta   operand
+         lda   ext
+         xba
+p3       sta   operand+2
+lb3      lda   response
+         and   #$0080
+         bne   lb3
 
-	lda	#$0074	save the double value
-c2	sta	command
-	lda	#$0089
-lb4	cmp	response
-	beq	lb4
-o4	lda	operand
-	xba
-	ldy	#6
-	sta	[addr],Y
-p4	lda	operand+2
-	xba
-	ldy	#4
-	sta	[addr],Y
-o5	lda	operand
-	xba
-	ldy	#2
-	sta	[addr],Y
-p5	lda	operand+2
-	xba
-	sta	[addr]
-lb5	lda	response
-	and	#$0080
-	bne	lb5
-	plb		restore B
+         lda   #$0074                   save the double value
+c2       sta   command
+         lda   #$0089
+lb4      cmp   response
+         beq   lb4
+o4       lda   operand
+         xba
+         ldy   #6
+         sta   [addr],Y
+p4       lda   operand+2
+         xba
+         ldy   #4
+         sta   [addr],Y
+o5       lda   operand
+         xba
+         ldy   #2
+         sta   [addr],Y
+p5       lda   operand+2
+         xba
+         sta   [addr]
+lb5      lda   response
+         and   #$0080
+         bne   lb5
+         plb                            restore B
 
          creturn
 ;
 ;  Local data
 ;
-FPEslot	ds	2	FPE slot displacement
+FPEslot  ds    2                        FPE slot displacement
          end
 
 ****************************************************************
@@ -1362,101 +1362,101 @@ lb1      txy
 ****************************************************************
 *
 ~CopyReal start
-	using	~FPECommon
+         using ~FPECommon
 
          csubroutine (4:addr),0
 ext      equ   addr+4
 
-command	equ	$C088	disp to the FPE command register
-operand	equ	$C08C	disp to the FPE operand register
-response equ	$C080	disp to the FPE response register
+command  equ   $C088                    disp to the FPE command register
+operand  equ   $C08C                    disp to the FPE operand register
+response equ   $C080                    disp to the FPE response register
 
-	phb		set up for abs addressing to bank 0
-	pea	0
-	plb
-	plb
-	lda	>FPEslot	get the slot displacelement
-	bne	lb1
-	phb
-	phk
-	plb
-	lda	slot
-	asl	A
-	asl	A
-	asl	A
-	asl	A
-	sta	FPEslot
-	ora	#command
-	sta	c1+1
-	sta	c2+1
-	lda	FPEslot
-	ora	#response
-	sta	lb2+1
-	sta	lb3+1
-	sta	lb4+1
-	sta	lb5+1
-	lda	FPEslot
-	ora	#operand
-	sta	o1+1
-	sta	o2+1
-	sta	o3+1
-	sta	o4+1
-	lda	FPEslot
-	ora	#operand+2
-	sta	p1+1
-	sta	p2+1
-	sta	p3+1
-	sta	p4+1
-	plb
-lb1	anop
+         phb                            set up for abs addressing to bank 0
+         pea   0
+         plb
+         plb
+         lda   >FPEslot                 get the slot displacelement
+         bne   lb1
+         phb
+         phk
+         plb
+         lda   slot
+         asl   A
+         asl   A
+         asl   A
+         asl   A
+         sta   FPEslot
+         ora   #command
+         sta   c1+1
+         sta   c2+1
+         lda   FPEslot
+         ora   #response
+         sta   lb2+1
+         sta   lb3+1
+         sta   lb4+1
+         sta   lb5+1
+         lda   FPEslot
+         ora   #operand
+         sta   o1+1
+         sta   o2+1
+         sta   o3+1
+         sta   o4+1
+         lda   FPEslot
+         ora   #operand+2
+         sta   p1+1
+         sta   p2+1
+         sta   p3+1
+         sta   p4+1
+         plb
+lb1      anop
 
-	lda	#$0048	load the extended value
-c1	sta	command
-	ldx	#$0089
-lb2	cpx	response
-	beq	lb2
-	lda	ext+8
-	xba
-o1	sta	operand
-p1	stz	operand+2
-	lda	ext+6
-	xba
-o2	sta	operand
-	lda	ext+4
-	xba
-p2	sta	operand+2
-	lda	ext+2
-	xba
-o3	sta	operand
-	lda	ext
-	xba
-p3	sta	operand+2
-lb3	lda	response
-	and	#$0080
-	bne	lb3
+         lda   #$0048                   load the extended value
+c1       sta   command
+         ldx   #$0089
+lb2      cpx   response
+         beq   lb2
+         lda   ext+8
+         xba
+o1       sta   operand
+p1       stz   operand+2
+         lda   ext+6
+         xba
+o2       sta   operand
+         lda   ext+4
+         xba
+p2       sta   operand+2
+         lda   ext+2
+         xba
+o3       sta   operand
+         lda   ext
+         xba
+p3       sta   operand+2
+lb3      lda   response
+         and   #$0080
+         bne   lb3
 
-	lda	#$0064	save the real value
-c2	sta	command
-	lda	#$0089
-lb4	cmp	response
-	beq	lb4
-o4	lda	operand
-	xba
-	ldy	#2
-	sta	[addr],Y
-p4	lda	operand+2
-	xba
-	sta	[addr]
-lb5	lda	response
-	and	#$0080
-	bne	lb5
-	plb		restore B
+         lda   #$0064                   save the real value
+c2       sta   command
+         lda   #$0089
+lb4      cmp   response
+         beq   lb4
+o4       lda   operand
+         xba
+         ldy   #2
+         sta   [addr],Y
+p4       lda   operand+2
+         xba
+         sta   [addr]
+lb5      lda   response
+         and   #$0080
+         bne   lb5
+         plb                            restore B
 
          creturn
 ;
 ;  Local data
 ;
-FPEslot	ds	2	FPE slot displacement
+FPEslot  ds    2                        FPE slot displacement
          end
 
 ****************************************************************
@@ -1520,8 +1520,8 @@ lcAfterMarkStack equ 1                  size of default part of stack frame
 *
 ~DivE    start
 
-	lda	#$2048
-	brl	~DoFPEBinop
+         lda   #$2048
+         brl   ~DoFPEBinop
          end
 
 ****************************************************************
@@ -1599,17 +1599,17 @@ lcAfterMarkStack equ 22                 location of function return value
 ~DoubleRet2 start
 
          lda   1,S                      swap address of double value
-         tax		 and return address
-         lda	2,S
-	tay
-	lda	4,S
-	sta	1,S
-	lda	6,S
-	sta	3,S
-	tya
-	sta	6,S
-	txa
-	sta	5,S
+         tax                             and return address
+         lda   2,S
+         tay
+         lda   4,S
+         sta   1,S
+         lda   6,S
+         sta   3,S
+         tya
+         sta   6,S
+         txa
+         sta   5,S
          ph4   #~RealVal                push address of extended value
          fd2x                           convert to extended
          ldx   #^~RealVal               load address of result
@@ -1697,33 +1697,33 @@ lcAfterMarkStack equ 22                 location of function return value
 ~ExtendedRet2 start
 
          lda   1,S                      swap address of value
-         tax		 and return address
-         lda	2,S
-	tay
-	lda	4,S
-	sta	1,S
-	lda	6,S
-	sta	3,S
-	tya
-	sta	6,S
-	txa
-	sta	5,S
-	tsc		set up a stack frame
-	phd
-	tcd
-	phb
-	phk
-	plb
-	ldy	#8	move the extended value
-lb1	lda	[1],Y
-	sta	~RealVal,Y
-	dey
-	dey
-	bpl	lb1
-	plb		get rid of the stack frame
-	pld
-	pla
-	pla
+         tax                             and return address
+         lda   2,S
+         tay
+         lda   4,S
+         sta   1,S
+         lda   6,S
+         sta   3,S
+         tya
+         sta   6,S
+         txa
+         sta   5,S
+         tsc                            set up a stack frame
+         phd
+         tcd
+         phb
+         phk
+         plb
+         ldy   #8                       move the extended value
+lb1      lda   [1],Y
+         sta   ~RealVal,Y
+         dey
+         dey
+         bpl   lb1
+         plb                            get rid of the stack frame
+         pld
+         pla
+         pla
          ldx   #^~RealVal               load address of result
          ldy   #~RealVal
          rtl                            return
@@ -1739,21 +1739,21 @@ lb1	lda	[1],Y
 ;
 ;  Definition of a file structure
 ;
-~flLen	equ	$0	length of the buffer
-~flRef	equ	$4	ProDOS reference number
-~flKind	equ	$6	Open for input (1), output (2),
-!			  text input (5), text output (6)
-~flEOLN	equ	$8	end of line flag
-~flEOF	equ	$A	end of file flag
-~flNameLen equ	$C	length of the file name
-~flName	equ	$E	pointer to name of file
-~flHeader equ	$12	length of the file header; buffer
+~flLen   equ   $0                       length of the buffer
+~flRef   equ   $4                       ProDOS reference number
+~flKind  equ   $6                       Open for input (1), output (2),
+!                                         text input (5), text output (6)
+~flEOLN  equ   $8                       end of line flag
+~flEOF   equ   $A                       end of file flag
+~flNameLen equ $C                       length of the file name
+~flName  equ   $E                       pointer to name of file
+~flHeader equ  $12                      length of the file header; buffer
 ;
 ;  File buffer variables
 ;
-~fileBuff ds	4	pointer to next file buffer
-~fileRecBuff ds 4	pointer to next file record buffer
-	end
+~fileBuff ds   4                        pointer to next file buffer
+~fileRecBuff ds 4                       pointer to next file record buffer
+         end
 
 ****************************************************************
 *
@@ -1911,100 +1911,100 @@ lb1      rtl
 *  ~ReadCharInput - read a character from standard in
 *
 *  Outputs:
-*	~EOLNInput - eoln(input)
-*	~EOFInput - eof(input)
-*	A - character read
-*	~InputChar - character read
+*        ~EOLNInput - eoln(input)
+*        ~EOFInput - eof(input)
+*        A - character read
+*        ~InputChar - character read
 *
 ****************************************************************
 *
 ~GetCharInput start
 ~ReadCharInput entry
-	longa on
-	longi on
-return	equ	13	RETURN key code
+         longa on
+         longi on
+return   equ   13                       RETURN key code
 
-	phb
-	phk
-	plb
-	lda	~EOFInput	check for read at EOF
-	beq	lb0
-	error #3	(read while at end of file)
-	stz	~EOFInput
-lb0	jsl	SysKeyin	get a character
-	and	#$00FF
-	stz	~EOLNInput	eoln(input) := false
-	cmp	#return	if its a return then
-	bne	lb1	  eoln(input) := true
-	inc	~EOLNInput
-	lda	#' '	  return a space
-lb1	cmp	#0	if its a null then
-	bne	lb2	  eof(input) := true
-	inc	~EOFInput
-	inc	~EOLNInput
-	lda	#' '	  return a space
-lb2	short M	return the char
-	sta	~InputChar
-	long	M
-	plb
-	rtl
-	end
+         phb
+         phk
+         plb
+         lda   ~EOFInput                check for read at EOF
+         beq   lb0
+         error #3                       (read while at end of file)
+         stz   ~EOFInput
+lb0      jsl   SysKeyin                 get a character
+         and   #$00FF
+         stz   ~EOLNInput               eoln(input) := false
+         cmp   #return                  if its a return then
+         bne   lb1                        eoln(input) := true
+         inc   ~EOLNInput
+         lda   #' '                       return a space
+lb1      cmp   #0                       if its a null then
+         bne   lb2                        eof(input) := true
+         inc   ~EOFInput
+         inc   ~EOLNInput
+         lda   #' '                       return a space
+lb2      short M                        return the char
+         sta   ~InputChar
+         long  M
+         plb
+         rtl
+         end
 
 ****************************************************************
 *
 *  ~GetSBuffer - allocate a string buffer
 *
 *  Inputs:
-*	a,x - number of bytes to allocate
+*        a,x - number of bytes to allocate
 *
 *  Outputs:
-*	a,x - pointer to buffer
-*	~StringList - buffer is added to string list
+*        a,x - pointer to buffer
+*        ~StringList - buffer is added to string list
 *
 ****************************************************************
 *
 ~GetSBuffer start
-	longa on
-	longi on
-r0	equ	0	save 0 page pointer
+         longa on
+         longi on
+r0       equ   0                        save 0 page pointer
 
-	phb		set data bank reg
-	phk
-	plb
+         phb                            set data bank reg
+         phk
+         plb
 
-	clc		add the node pointer
-	adc	#4
-	bcc	gs1
-	inx
-gs1	phx		get a buffer
-	pha
-	jsl	~New
-	sta	buff
-	stx	buff+2
-	ora	buff+2
-	beq	err
-	ph4	r0	save 0 page
-	move4 buff,r0	insert the buffer into the list
-	lda	~StringList
-	sta	[r0]
-	ldy	#2
-	lda	~StringList+2
-	sta	[r0],y
-	move4 buff,~StringList
-	add4	buff,#4	adjust buffer pointer past node
-	pl4	r0
-	lda	buff	return the pointer
-	ldx	buff+2
-	plb
-	clc
-	rts
+         clc                            add the node pointer
+         adc   #4
+         bcc   gs1
+         inx
+gs1      phx                            get a buffer
+         pha
+         jsl   ~New
+         sta   buff
+         stx   buff+2
+         ora   buff+2
+         beq   err
+         ph4   r0                       save 0 page
+         move4 buff,r0                  insert the buffer into the list
+         lda   ~StringList
+         sta   [r0]
+         ldy   #2
+         lda   ~StringList+2
+         sta   [r0],y
+         move4 buff,~StringList
+         add4  buff,#4                  adjust buffer pointer past node
+         pl4   r0
+         lda   buff                     return the pointer
+         ldx   buff+2
+         plb
+         clc
+         rts
 
-err	plb		restore data bank reg
-	sec
-	rts
+err      plb                            restore data bank reg
+         sec
+         rts
 
-buff	ds	4	buffer pointer
-	end
+buff     ds    4                        buffer pointer
+         end
 
 ****************************************************************
 *
@@ -2098,120 +2098,120 @@ lb1      rtl
 ****************************************************************
 *
 ~LoadDouble start
-	using	~FPECommon
+         using ~FPECommon
 
-command	equ	$C088	disp to the FPE command register
-operand	equ	$C08C	disp to the FPE operand register
-response equ	$C080	disp to the FPE response register
+command  equ   $C088                    disp to the FPE command register
+operand  equ   $C08C                    disp to the FPE operand register
+response equ   $C080                    disp to the FPE response register
 
-ext	equ	5	position of extended number
-addr	equ	5	direct page address of the float pointer
+ext      equ   5                        position of extended number
+addr     equ   5                        direct page address of the float pointer
 
-	phb		set up for abs addressing to bank 0
-	pea	0
-	plb
-	plb
-	lda	>FPEslot	get the slot displacelement
-	bne	lb1
-	phb
-	phk
-	plb
-	lda	slot
-	asl	A
-	asl	A
-	asl	A
-	asl	A
-	sta	FPEslot
-	ora	#command
-	sta	c1+1
-	sta	c2+1
-	lda	FPEslot
-	ora	#response
-	sta	lb2+1
-	sta	lb3+1
-	sta	lb4+1
-	sta	lb5+1
-	lda	FPEslot
-	ora	#operand
-	sta	o1+1
-	sta	o2+1
-	sta	o3+1
-	sta	o4+1
-	sta	o5+1
-	lda	FPEslot
-	ora	#operand+2
-	sta	p1+1
-	sta	p2+1
-	sta	p3+1
-	sta	p4+1
-	sta	p5+1
-	plb
-lb1	anop
+         phb                            set up for abs addressing to bank 0
+         pea   0
+         plb
+         plb
+         lda   >FPEslot                 get the slot displacelement
+         bne   lb1
+         phb
+         phk
+         plb
+         lda   slot
+         asl   A
+         asl   A
+         asl   A
+         asl   A
+         sta   FPEslot
+         ora   #command
+         sta   c1+1
+         sta   c2+1
+         lda   FPEslot
+         ora   #response
+         sta   lb2+1
+         sta   lb3+1
+         sta   lb4+1
+         sta   lb5+1
+         lda   FPEslot
+         ora   #operand
+         sta   o1+1
+         sta   o2+1
+         sta   o3+1
+         sta   o4+1
+         sta   o5+1
+         lda   FPEslot
+         ora   #operand+2
+         sta   p1+1
+         sta   p2+1
+         sta   p3+1
+         sta   p4+1
+         sta   p5+1
+         plb
+lb1      anop
 
-	lda	#$0054	load the double value
-c1	sta	command
-	tsc
-	phd
-	tcd
-	ldx	#$0089
-lb2	cpx	response
-	beq	lb2
-	ldy	#6
-	lda	[addr],Y
-	xba
-o1	sta	operand
-	ldy	#4
-	lda	[addr],Y
-	xba
-p1	sta	operand+2
-	ldy	#2
-	lda	[addr],Y
-	xba
-o2	sta	operand
-	lda	[addr]
-	xba
-p2	sta	operand+2
-	pld
-lb3	lda	response
-	and	#$0080
-	bne	lb3
+         lda   #$0054                   load the double value
+c1       sta   command
+         tsc
+         phd
+         tcd
+         ldx   #$0089
+lb2      cpx   response
+         beq   lb2
+         ldy   #6
+         lda   [addr],Y
+         xba
+o1       sta   operand
+         ldy   #4
+         lda   [addr],Y
+         xba
+p1       sta   operand+2
+         ldy   #2
+         lda   [addr],Y
+         xba
+o2       sta   operand
+         lda   [addr]
+         xba
+p2       sta   operand+2
+         pld
+lb3      lda   response
+         and   #$0080
+         bne   lb3
     
-	lda	3,S	make room on the stack
-	pha
-	pha
-	lda	5,S
-	pha
-	lda	#$0068	save the extended value
-c2	sta	command
-	lda	#$0089
-lb4	cmp	response
-	beq	lb4
-o3	lda	operand
-	xba
-	sta	ext+8,S
-p3	lda	operand+2
-o4	lda	operand
-	xba
-	sta	ext+6,S
-p4	lda	operand+2
-	xba
-	sta	ext+4,S
-o5	lda	operand
-	xba
-	sta	ext+2,S
-p5	lda	operand+2
-	xba
-	sta	ext,S
-lb5	lda	response
-	and	#$0080
-	bne	lb5
-	plb		restore B
+         lda   3,S                      make room on the stack
+         pha
+         pha
+         lda   5,S
+         pha
+         lda   #$0068                   save the extended value
+c2       sta   command
+         lda   #$0089
+lb4      cmp   response
+         beq   lb4
+o3       lda   operand
+         xba
+         sta   ext+8,S
+p3       lda   operand+2
+o4       lda   operand
+         xba
+         sta   ext+6,S
+p4       lda   operand+2
+         xba
+         sta   ext+4,S
+o5       lda   operand
+         xba
+         sta   ext+2,S
+p5       lda   operand+2
+         xba
+         sta   ext,S
+lb5      lda   response
+         and   #$0080
+         bne   lb5
+         plb                            restore B
 
          rtl
 ;
 ;  Local data
 ;
-FPEslot	ds	2	FPE slot displacement
+FPEslot  ds    2                        FPE slot displacement
          end
 
 ****************************************************************
@@ -2271,110 +2271,110 @@ lb1      txy
 ****************************************************************
 *
 ~LoadReal start
-	using	~FPECommon
+         using ~FPECommon
 
-command	equ	$C088	disp to the FPE command register
-operand	equ	$C08C	disp to the FPE operand register
-response equ	$C080	disp to the FPE response register
+command  equ   $C088                    disp to the FPE command register
+operand  equ   $C08C                    disp to the FPE operand register
+response equ   $C080                    disp to the FPE response register
 
-ext	equ	5	position of extended number
-addr	equ	5	direct page address of the float pointer
+ext      equ   5                        position of extended number
+addr     equ   5                        direct page address of the float pointer
 
-	phb		set up for abs addressing to bank 0
-	pea	0
-	plb
-	plb
-	lda	>FPEslot	get the slot displacelement
-	bne	lb1
-	phb
-	phk
-	plb
-	lda	slot
-	asl	A
-	asl	A
-	asl	A
-	asl	A
-	sta	FPEslot
-	ora	#command
-	sta	c1+1
-	sta	c2+1
-	lda	FPEslot
-	ora	#response
-	sta	lb2+1
-	sta	lb3+1
-	sta	lb4+1
-	sta	lb5+1
-	lda	FPEslot
-	ora	#operand
-	sta	o1+1
-	sta	o2+1
-	sta	o3+1
-	sta	o4+1
-	lda	FPEslot
-	ora	#operand+2
-	sta	p1+1
-	sta	p2+1
-	sta	p3+1
-	sta	p4+1
-	plb
-lb1	anop
+         phb                            set up for abs addressing to bank 0
+         pea   0
+         plb
+         plb
+         lda   >FPEslot                 get the slot displacelement
+         bne   lb1
+         phb
+         phk
+         plb
+         lda   slot
+         asl   A
+         asl   A
+         asl   A
+         asl   A
+         sta   FPEslot
+         ora   #command
+         sta   c1+1
+         sta   c2+1
+         lda   FPEslot
+         ora   #response
+         sta   lb2+1
+         sta   lb3+1
+         sta   lb4+1
+         sta   lb5+1
+         lda   FPEslot
+         ora   #operand
+         sta   o1+1
+         sta   o2+1
+         sta   o3+1
+         sta   o4+1
+         lda   FPEslot
+         ora   #operand+2
+         sta   p1+1
+         sta   p2+1
+         sta   p3+1
+         sta   p4+1
+         plb
+lb1      anop
 
-	lda	#$0044	load the real value
-c1	sta	command
-	tsc
-	phd
-	tcd
-	ldx	#$0089
-lb2	cpx	response
-	beq	lb2
-	ldy	#2
-	lda	[addr],Y
-	xba
-o1	sta	operand
-	lda	[addr]
-	xba
-p1	sta	operand+2
-	pld
-lb3	lda	response
-	and	#$0080
-	bne	lb3
+         lda   #$0044                   load the real value
+c1       sta   command
+         tsc
+         phd
+         tcd
+         ldx   #$0089
+lb2      cpx   response
+         beq   lb2
+         ldy   #2
+         lda   [addr],Y
+         xba
+o1       sta   operand
+         lda   [addr]
+         xba
+p1       sta   operand+2
+         pld
+lb3      lda   response
+         and   #$0080
+         bne   lb3
     
-	lda	3,S	make room on the stack
-	pha
-	pha
-	lda	5,S
-	pha
-	lda	#$0068	save the extended value
-c2	sta	command
-	lda	#$0089
-lb4	cmp	response
-	beq	lb4
-o2	lda	operand
-	xba
-	sta	ext+8,S
-p2	lda	operand+2
-o3	lda	operand
-	xba
-	sta	ext+6,S
-p3	lda	operand+2
-	xba
-	sta	ext+4,S
-o4	lda	operand
-	xba
-	sta	ext+2,S
-p4	lda	operand+2
-	xba
-	sta	ext,S
-lb5	lda	response
-	and	#$0080
-	bne	lb5
-	plb		restore B
+         lda   3,S                      make room on the stack
+         pha
+         pha
+         lda   5,S
+         pha
+         lda   #$0068                   save the extended value
+c2       sta   command
+         lda   #$0089
+lb4      cmp   response
+         beq   lb4
+o2       lda   operand
+         xba
+         sta   ext+8,S
+p2       lda   operand+2
+o3       lda   operand
+         xba
+         sta   ext+6,S
+p3       lda   operand+2
+         xba
+         sta   ext+4,S
+o4       lda   operand
+         xba
+         sta   ext+2,S
+p4       lda   operand+2
+         xba
+         sta   ext,S
+lb5      lda   response
+         and   #$0080
+         bne   lb5
+         plb                            restore B
 
          rtl
 ;
 ;  Local data
 ;
-FPEslot	ds	2	FPE slot displacement
+FPEslot  ds    2                        FPE slot displacement
          end
 
 ****************************************************************
@@ -2411,8 +2411,8 @@ FPEslot	ds	2	FPE slot displacement
 *
 ~MulE    start
 
-	lda	#$2348
-	brl	~DoFPEBinop
+         lda   #$2348
+         brl   ~DoFPEBinop
          end
 
 ****************************************************************
@@ -2841,17 +2841,17 @@ lcAfterMarkStack equ 22                 size of default part of stack frame
 ~RealRet2 start
 
          lda   1,S                      swap address of double value
-         tax		 and return address
-         lda	2,S
-	tay
-	lda	4,S
-	sta	1,S
-	lda	6,S
-	sta	3,S
-	tya
-	sta	6,S
-	txa
-	sta	5,S
+         tax                             and return address
+         lda   2,S
+         tay
+         lda   4,S
+         sta   1,S
+         lda   6,S
+         sta   3,S
+         tya
+         sta   6,S
+         txa
+         sta   5,S
          ph4   #~RealVal                push address of extended value
          fs2x                           convert to extended
          ldx   #^~RealVal               load address of result
@@ -3116,110 +3116,110 @@ lb1      rtl                            return
 ****************************************************************
 *
 ~SaveDouble start
-	using	~FPECommon
+         using ~FPECommon
 
          csubroutine (4:addr,10:ext),0
 
-command	equ	$C088	disp to the FPE command register
-operand	equ	$C08C	disp to the FPE operand register
-response equ	$C080	disp to the FPE response register
+command  equ   $C088                    disp to the FPE command register
+operand  equ   $C08C                    disp to the FPE operand register
+response equ   $C080                    disp to the FPE response register
 
-	phb		set up for abs addressing to bank 0
-	pea	0
-	plb
-	plb
-	lda	>FPEslot	get the slot displacelement
-	bne	lb1
-	phb
-	phk
-	plb
-	lda	slot
-	asl	A
-	asl	A
-	asl	A
-	asl	A
-	sta	FPEslot
-	ora	#command
-	sta	c1+1
-	sta	c2+1
-	lda	FPEslot
-	ora	#response
-	sta	lb2+1
-	sta	lb3+1
-	sta	lb4+1
-	sta	lb5+1
-	lda	FPEslot
-	ora	#operand
-	sta	o1+1
-	sta	o2+1
-	sta	o3+1
-	sta	o4+1
-	sta	o5+1
-	lda	FPEslot
-	ora	#operand+2
-	sta	p1+1
-	sta	p2+1
-	sta	p3+1
-	sta	p4+1
-	sta	p5+1
-	plb
-lb1	anop
+         phb                            set up for abs addressing to bank 0
+         pea   0
+         plb
+         plb
+         lda   >FPEslot                 get the slot displacelement
+         bne   lb1
+         phb
+         phk
+         plb
+         lda   slot
+         asl   A
+         asl   A
+         asl   A
+         asl   A
+         sta   FPEslot
+         ora   #command
+         sta   c1+1
+         sta   c2+1
+         lda   FPEslot
+         ora   #response
+         sta   lb2+1
+         sta   lb3+1
+         sta   lb4+1
+         sta   lb5+1
+         lda   FPEslot
+         ora   #operand
+         sta   o1+1
+         sta   o2+1
+         sta   o3+1
+         sta   o4+1
+         sta   o5+1
+         lda   FPEslot
+         ora   #operand+2
+         sta   p1+1
+         sta   p2+1
+         sta   p3+1
+         sta   p4+1
+         sta   p5+1
+         plb
+lb1      anop
 
-	lda	#$0048	load the extended value
-c1	sta	command
-	ldx	#$0089
-lb2	cpx	response
-	beq	lb2
-	lda	ext+8
-	xba
-o1	sta	operand
-p1	stz	operand+2
-	lda	ext+6
-	xba
-o2	sta	operand
-	lda	ext+4
-	xba
-p2	sta	operand+2
-	lda	ext+2
-	xba
-o3	sta	operand
-	lda	ext
-	xba
-p3	sta	operand+2
-lb3	lda	response
-	and	#$0080
-	bne	lb3
+         lda   #$0048                   load the extended value
+c1       sta   command
+         ldx   #$0089
+lb2      cpx   response
+         beq   lb2
+         lda   ext+8
+         xba
+o1       sta   operand
+p1       stz   operand+2
+         lda   ext+6
+         xba
+o2       sta   operand
+         lda   ext+4
+         xba
+p2       sta   operand+2
+         lda   ext+2
+         xba
+o3       sta   operand
+         lda   ext
+         xba
+p3       sta   operand+2
+lb3      lda   response
+         and   #$0080
+         bne   lb3
 
-	lda	#$0074	save the double value
-c2	sta	command
-	lda	#$0089
-lb4	cmp	response
-	beq	lb4
-o4	lda	operand
-	xba
-	ldy	#6
-	sta	[addr],Y
-p4	lda	operand+2
-	xba
-	ldy	#4
-	sta	[addr],Y
-o5	lda	operand
-	xba
-	ldy	#2
-	sta	[addr],Y
-p5	lda	operand+2
-	xba
-	sta	[addr]
-lb5	lda	response
-	and	#$0080
-	bne	lb5
-	plb		restore B
+         lda   #$0074                   save the double value
+c2       sta   command
+         lda   #$0089
+lb4      cmp   response
+         beq   lb4
+o4       lda   operand
+         xba
+         ldy   #6
+         sta   [addr],Y
+p4       lda   operand+2
+         xba
+         ldy   #4
+         sta   [addr],Y
+o5       lda   operand
+         xba
+         ldy   #2
+         sta   [addr],Y
+p5       lda   operand+2
+         xba
+         sta   [addr]
+lb5      lda   response
+         and   #$0080
+         bne   lb5
+         plb                            restore B
 
          creturn
 ;
 ;  Local data
 ;
-FPEslot	ds	2	FPE slot displacement
+FPEslot  ds    2                        FPE slot displacement
          end
 
 ****************************************************************
@@ -3259,100 +3259,100 @@ lb1      txy
 ****************************************************************
 *
 ~SaveReal start
-	using	~FPECommon
+         using ~FPECommon
 
          csubroutine (4:addr,10:ext),0
 
-command	equ	$C088	disp to the FPE command register
-operand	equ	$C08C	disp to the FPE operand register
-response equ	$C080	disp to the FPE response register
+command  equ   $C088                    disp to the FPE command register
+operand  equ   $C08C                    disp to the FPE operand register
+response equ   $C080                    disp to the FPE response register
 
-	phb		set up for abs addressing to bank 0
-	pea	0
-	plb
-	plb
-	lda	>FPEslot	get the slot displacelement
-	bne	lb1
-	phb
-	phk
-	plb
-	lda	slot
-	asl	A
-	asl	A
-	asl	A
-	asl	A
-	sta	FPEslot
-	ora	#command
-	sta	c1+1
-	sta	c2+1
-	lda	FPEslot
-	ora	#response
-	sta	lb2+1
-	sta	lb3+1
-	sta	lb4+1
-	sta	lb5+1
-	lda	FPEslot
-	ora	#operand
-	sta	o1+1
-	sta	o2+1
-	sta	o3+1
-	sta	o4+1
-	lda	FPEslot
-	ora	#operand+2
-	sta	p1+1
-	sta	p2+1
-	sta	p3+1
-	sta	p4+1
-	plb
-lb1	anop
+         phb                            set up for abs addressing to bank 0
+         pea   0
+         plb
+         plb
+         lda   >FPEslot                 get the slot displacelement
+         bne   lb1
+         phb
+         phk
+         plb
+         lda   slot
+         asl   A
+         asl   A
+         asl   A
+         asl   A
+         sta   FPEslot
+         ora   #command
+         sta   c1+1
+         sta   c2+1
+         lda   FPEslot
+         ora   #response
+         sta   lb2+1
+         sta   lb3+1
+         sta   lb4+1
+         sta   lb5+1
+         lda   FPEslot
+         ora   #operand
+         sta   o1+1
+         sta   o2+1
+         sta   o3+1
+         sta   o4+1
+         lda   FPEslot
+         ora   #operand+2
+         sta   p1+1
+         sta   p2+1
+         sta   p3+1
+         sta   p4+1
+         plb
+lb1      anop
 
-	lda	#$0048	load the extended value
-c1	sta	command
-	ldx	#$0089
-lb2	cpx	response
-	beq	lb2
-	lda	ext+8
-	xba
-o1	sta	operand
-p1	stz	operand+2
-	lda	ext+6
-	xba
-o2	sta	operand
-	lda	ext+4
-	xba
-p2	sta	operand+2
-	lda	ext+2
-	xba
-o3	sta	operand
-	lda	ext
-	xba
-p3	sta	operand+2
-lb3	lda	response
-	and	#$0080
-	bne	lb3
+         lda   #$0048                   load the extended value
+c1       sta   command
+         ldx   #$0089
+lb2      cpx   response
+         beq   lb2
+         lda   ext+8
+         xba
+o1       sta   operand
+p1       stz   operand+2
+         lda   ext+6
+         xba
+o2       sta   operand
+         lda   ext+4
+         xba
+p2       sta   operand+2
+         lda   ext+2
+         xba
+o3       sta   operand
+         lda   ext
+         xba
+p3       sta   operand+2
+lb3      lda   response
+         and   #$0080
+         bne   lb3
 
-	lda	#$0064	save the real value
-c2	sta	command
-	lda	#$0089
-lb4	cmp	response
-	beq	lb4
-o4	lda	operand
-	xba
-	ldy	#2
-	sta	[addr],Y
-p4	lda	operand+2
-	xba
-	sta	[addr]
-lb5	lda	response
-	and	#$0080
-	bne	lb5
-	plb		restore B
+         lda   #$0064                   save the real value
+c2       sta   command
+         lda   #$0089
+lb4      cmp   response
+         beq   lb4
+o4       lda   operand
+         xba
+         ldy   #2
+         sta   [addr],Y
+p4       lda   operand+2
+         xba
+         sta   [addr]
+lb5      lda   response
+         and   #$0080
+         bne   lb5
+         plb                            restore B
 
          creturn
 ;
 ;  Local data
 ;
-FPEslot	ds	2	FPE slot displacement
+FPEslot  ds    2                        FPE slot displacement
          end
 
 ****************************************************************
@@ -3431,66 +3431,66 @@ FPEslot	ds	2	FPE slot displacement
 *  StringToStandard - Convert a string to standard form
 *
 *  "Standard form" means the pointer points to the first char
-*  of the string, and the length is the current length.	 See
+*  of the string, and the length is the current length.  See
 *  also ~StringToMaxStandard.
 *
 *  Inputs:
-*	addr - address of string
-*	len - length of string
+*        addr - address of string
+*        len - length of string
 *
 *  Outputs:
-*	addr - ptr to first char
-*	len - current length of string
+*        addr - ptr to first char
+*        len - current length of string
 *
 ****************************************************************
 *
 ~StringToStandard start
-addr	equ	7	string address
-len	equ	5	string length
+addr     equ   7                        string address
+len      equ   5                        string length
 
-	phd		set up local DP
-	tsc
-	tcd
-	lda	len	if length < 0 then
-	beq	lb5
-	bpl	lb2
-	inc	a	  if length = -1 then
-	bne	lb1
-	lda	addr+2	    if char = 0 then
-	and	#$00FF	      {string is a null character}
-	bne	lb0
-	stz	len	      len := 0
-	bra	lb5	    endif
-lb0	lda	#1	    len := 1
-	sta	len	    {string is a single character}
-	lda	addr+2
-	sta	>char
-	lla	addr,char
-	bra	lb5	    endif
-!			  endif
-!			  {string has a length byte}
-lb1	lda	[addr]	  len := addr^
-	and	#$00FF
-	sta	len
-	inc4	addr	  ++addr {skip length byte}
-	bra	lb5	else
-!			  {string is a nul terminated string}
-lb2	ldx	len	  scan string for nul to find length
-	ldy	#0
-	short M
-lb3	lda	[addr],Y
-	beq	lb4
-	iny
-	dex
-	bne	lb3
-lb4	sty	len
-	long	M	endif
+         phd                            set up local DP
+         tsc
+         tcd
+         lda   len                      if length < 0 then
+         beq   lb5
+         bpl   lb2
+         inc   a                          if length = -1 then
+         bne   lb1
+         lda   addr+2                       if char = 0 then
+         and   #$00FF                         {string is a null character}
+         bne   lb0
+         stz   len                            len := 0
+         bra   lb5                          endif
+lb0      lda   #1                           len := 1
+         sta   len                          {string is a single character}
+         lda   addr+2
+         sta   >char
+         lla   addr,char
+         bra   lb5                          endif
+!                                         endif
+!                                         {string has a length byte}
+lb1      lda   [addr]                     len := addr^
+         and   #$00FF
+         sta   len
+         inc4  addr                       ++addr {skip length byte}
+         bra   lb5                      else
+!                                         {string is a nul terminated string}
+lb2      ldx   len                        scan string for nul to find length
+         ldy   #0
+         short M
+lb3      lda   [addr],Y
+         beq   lb4
+         iny
+         dex
+         bne   lb3
+lb4      sty   len
+         long  M                        endif
 
-lb5	pld
-	rts
+lb5      pld
+         rts
 
-char	ds	2	value of a character string
-	end
+char     ds    2                        value of a character string
+         end
 
 ****************************************************************
 *
@@ -3503,8 +3503,8 @@ char	ds	2	value of a character string
 *
 ~SubE    start
 
-	lda	#$2848
-	brl	~DoFPEBinop
+         lda   #$2848
+         brl   ~DoFPEBinop
          end
 
 ****************************************************************
@@ -3607,10 +3607,10 @@ lb1      lda   decDig,X
          bpl   lb1
          jsl   ~FormatReal
          ph4   #pasString-1             write the string
-         ph2	#1
-	ph2	#0
-	ph2	#1
-	jsl	~Puts
+         ph2   #1
+         ph2   #0
+         ph2   #1
+         jsl   ~Puts
 
          plb
          return
@@ -3645,10 +3645,10 @@ lb1      lda   decDig,X
          bpl   lb1
          jsl   ~FormatReal
          ph4   #pasString-1             write the string
-         ph2	#1
-	ph2	#0
-	ph2	#0
-	jsl	~Puts
+         ph2   #1
+         ph2   #0
+         ph2   #0
+         jsl   ~Puts
 
          plb
          return

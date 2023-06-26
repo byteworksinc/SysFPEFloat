@@ -20,6 +20,109 @@ FE_ALL_EXCEPT gequ $001F
 
 ****************************************************************
 *
+*  ~GETENV - Get floating-point environment
+*
+*  Outputs: Returns environment in same format as SANE FGETENV
+*
+****************************************************************
+*
+~GETENV  private
+         phb
+         phk
+         plb
+         lda   #$00A8                   get FPSR value
+         jsl   ~GETFPECONTROLREG
+         
+         stz   excepts                  set SANE-style exception bits
+         clc
+         bit   #$0008                   set inexact bit
+         beq   lb1
+         sec
+lb1      rol   excepts
+         bit   #$0010                   set div-by-zero bit
+         beq   lb2
+         sec
+lb2      rol   excepts
+         bit   #$0040                   set overflow bit
+         beq   lb3
+         sec
+lb3      rol   excepts
+         bit   #$0020                   set underflow bit
+         beq   lb4
+         sec
+lb4      rol   excepts
+         bit   #$0080                   set invalid bit
+         beq   lb5
+         sec
+lb5      rol   excepts
+
+         FGETENV                        OR in FPE exceptions with SANE env word
+         txa
+         ora   space
+         tax                            leave results in X+Y regs, like SANE
+         xba
+         and   #$00FF
+         tay
+
+         plb
+         rts                            return
+
+space    dc    i1'0'                    one zero byte before excepts
+excepts  ds    2                        exceptions read from FPE
+         end
+
+****************************************************************
+*
+*  ~SETENV - Set floating-point environment
+*
+*  Inputs: New environment value on stack, like SANE FSETENV
+*
+****************************************************************
+*
+~SETENV  private
+         lda   3,s                      convert rounding precision
+         and   #$00C0
+         cmp   #$0080
+         bne   lb1
+         lsr   a
+         bra   lb2
+lb1      cmp   #$0040
+         bne   lb2
+         asl   a
+lb2      pha
+
+         lda   3+2,s                    convert rounding direction
+         and   #$C000
+         bit   #$4000
+         beq   lb3
+         eor   #$8000
+lb3      xba
+         lsr   a
+         lsr   a
+
+         ora   1,s                      construct FPCR value to set
+         plx
+         tax
+         ldy   #0
+         lda   #$0090                   set the FPCR
+         jsl   ~SETFPECONTROLREG
+         
+         ldx   #0                       zero the FPSR
+         txy
+         lda   #$0088
+         jsl   ~SETFPECONTROLREG
+
+         lda   3,s                      set SANE environment
+         pha
+         FSETENV
+
+         pla                            clean up stack and return
+         sta   1,s
+         rts
+         end
+
+****************************************************************
+*
 *  int feclearexcept(int excepts);
 *
 *  Clear floating-point exceptions
@@ -36,7 +139,7 @@ feclearexcept start
 
          csubroutine (2:excepts),0
          
-         FGETENV                               get current environment
+         jsr   ~GETENV                         get current environment
          phx
          
          lda   excepts
@@ -45,7 +148,7 @@ feclearexcept start
          xba
          and   1,S
          sta   1,S
-         FSETENV                               clear them
+         jsr   ~SETENV                         clear them
 
          creturn 2:#0
          end
@@ -69,7 +172,7 @@ fegetexceptflag start
 
          csubroutine (4:flagp,2:excepts),0
          
-         FGETENV                               get current environment
+         jsr   ~GETENV                         get current environment
          tya
          and   excepts                         get desired exceptions
          and   #FE_ALL_EXCEPT
@@ -124,7 +227,7 @@ fesetexceptflag start
 
          csubroutine (4:flagp,2:excepts),0
          
-         FGETENV                        get env with excepts masked off
+         jsr   ~GETENV                  get env with excepts masked off
          phx
          lda   excepts
          and   #FE_ALL_EXCEPT
@@ -139,7 +242,7 @@ fesetexceptflag start
          xba
          ora   1,S
          sta   1,S
-         FSETENV
+         jsr   ~SETENV
          
          creturn 2:#0
          end
@@ -162,7 +265,7 @@ fetestexcept start
 
          csubroutine (2:excepts),0
          
-         FGETENV                        get exception flags
+         jsr   ~GETENV                  get exception flags
          tya
          and   excepts                  mask to just the ones we want
          and   #FE_ALL_EXCEPT
@@ -183,7 +286,7 @@ fetestexcept start
 ****************************************************************
 *
 fegetround start
-         FGETENV                        get high word of environment
+         jsr   ~GETENV                  get high word of environment
          tya
          and   #$00C0                   just rounding direction
          rtl
@@ -213,12 +316,12 @@ fesetround start
          and   #$3FFF                   do nothing if not a valid rounding dir
          bne   done
 
-         FGETENV                        set the rounding direction
+         jsr   ~GETENV                  set the rounding direction
          txa
          and   #$3FFF
          ora   round
          pha
-         FSETENV
+         jsr   ~SETENV
 
          stz   round
 done     creturn 2:round
@@ -242,7 +345,7 @@ fegetenv start
 
          csubroutine (4:envp),0
          
-         FGETENV                        get the environment
+         jsr   ~GETENV                  get the environment
          txa
          sta   [envp]                   store it in *envp
          
@@ -267,13 +370,13 @@ feholdexcept start
 
          csubroutine (4:envp),0
          
-         FGETENV                        get the environment
+         jsr   ~GETENV                  get the environment
          txa
          sta   [envp]                   store it in *envp
          
          and   #$E0E0                   clear exception flags and disable halts
          pha
-         FSETENV                        set the new environment
+         jsr   ~SETENV                  set the new environment
          
          creturn 2:#0
          end
@@ -298,7 +401,7 @@ fesetenv start
 
          lda   [envp]                   set the environment
          pha
-         FSETENV
+         jsr   ~SETENV
 
          creturn 2:#0
          end
@@ -321,9 +424,13 @@ feupdateenv start
 
          csubroutine (4:envp),0
 
-         lda   [envp]                   set the environment
-         pha
-         FPROCEXIT
+         jsr   ~GETENV                  get exceptions from current environment
+         txa
+         and   #$1F00
+
+         ora   [envp]                   OR exceptions into new environment
+         pha                            set the environment
+         jsr   ~SETENV
 
          creturn 2:#0
          end
@@ -350,7 +457,7 @@ __FE_DFL_ENV start
 ****************************************************************
 *
 __get_flt_rounds start
-         FGETENV
+         jsr   ~GETENV
          tya                            get rounding direction in low bits of A
          asl   a
          asl   a

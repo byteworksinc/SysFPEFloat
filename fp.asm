@@ -332,6 +332,157 @@ FPEslot  ds    2                        FPE slot displacement
 
 ****************************************************************
 *
+*  ~GetFPEControlReg - get the value of an FPE control register
+*
+*  Inputs:
+*        A - FPE operation code (FMOVE control register)
+*
+*  Outputs:
+*        A-X - result value
+*
+****************************************************************
+*
+~GetFPEControlReg start
+         using ~FPECommon
+
+command  equ   $C088                    disp to the FPE command register
+operand  equ   $C08C                    disp to the FPE operand register
+response equ   $C080                    disp to the FPE response register
+
+save     equ   $0068                    op code for save of FPE0 to extended
+
+val      equ   5                        start of value on stack
+
+         phb                            set up for abs addressing to bank 0
+         pea   0
+         plb
+         plb
+         pha                            save the operation
+         lda   >FPEslot                 get the slot displacelement
+         bne   lb1
+         phb
+         phk
+         plb
+         lda   slot
+         asl   A
+         asl   A
+         asl   A
+         asl   A
+         sta   FPEslot
+         ora   #command
+         sta   c1+1
+         lda   FPEslot
+         ora   #response
+         sta   lb2+1
+         sta   lb3+1
+         lda   FPEslot
+         ora   #operand
+         sta   o1+1
+         lda   FPEslot
+         ora   #operand+2
+         sta   p1+1
+         plb
+
+lb1      pla                            issue the command
+c1       sta   command
+         ldx   #$0089
+lb2      cpx   response
+         beq   lb2
+o1       lda   operand                  get the result
+         xba
+         tax
+p1       lda   operand+2
+         xba
+         tay
+lb3      lda   response
+         and   #$0080
+         bne   lb3
+         plb                            restore B
+         tya                            return the result
+         rtl
+;
+;  Local data
+;
+FPEslot  ds    2                        FPE slot displacement
+         end
+
+****************************************************************
+*
+*  ~SetFPEControlReg - get the value of an FPE control register
+*
+*  Inputs:
+*        A   - FPE operation code (FMOVE control register)
+*        X-Y - Value to set
+*
+****************************************************************
+*
+~SetFPEControlReg start
+         using ~FPECommon
+
+command  equ   $C088                    disp to the FPE command register
+operand  equ   $C08C                    disp to the FPE operand register
+response equ   $C080                    disp to the FPE response register
+
+save     equ   $0068                    op code for save of FPE0 to extended
+
+val      equ   5                        start of value on stack
+
+         phb                            set up for abs addressing to bank 0
+         pea   0
+         plb
+         plb
+         phx                            save the value
+         phy
+         pha                            save the operation
+         lda   >FPEslot                 get the slot displacelement
+         bne   lb1
+         phb
+         phk
+         plb
+         lda   slot
+         asl   A
+         asl   A
+         asl   A
+         asl   A
+         sta   FPEslot
+         ora   #command
+         sta   c1+1
+         lda   FPEslot
+         ora   #response
+         sta   lb2+1
+         sta   lb3+1
+         lda   FPEslot
+         ora   #operand
+         sta   o1+1
+         lda   FPEslot
+         ora   #operand+2
+         sta   p1+1
+         plb
+
+lb1      pla                            issue the command
+c1       sta   command
+         ldx   #$0089
+lb2      cpx   response
+         beq   lb2
+         pla                            write the value
+         xba
+o1       sta   operand
+         pla
+         xba
+p1       sta   operand+2
+lb3      lda   response
+         and   #$0080
+         bne   lb3
+         plb                            restore B
+         rtl
+;
+;  Local data
+;
+FPEslot  ds    2                        FPE slot displacement
+         end
+
+****************************************************************
+*
 *  SetFPESlot - Set the FPE slot number
 *
 *  Inputs:
@@ -351,6 +502,17 @@ SetFPESlot start
          sta   slot
          phy
          phx
+
+         ldx   #0                       zero the FPCR
+         txy
+         lda   #$0090
+         jsl   ~SETFPECONTROLREG
+         
+         ldx   #0                       zero the FPSR
+         txy
+         lda   #$0088
+         jsl   ~SETFPECONTROLREG
+
          plb
          rtl
          end

@@ -3443,33 +3443,9 @@ setquo   sta   [18]                     store it
 rint     start
 rintf    entry
 rintl    entry
-         using MathCommon2
 
-         phb                            place the number in a work area
-         plx
-         ply
-         phk
-         plb
-         pla
-         sta   t1
-         pla
-         sta   t1+2
-         pla
-         sta   t1+4
-         pla
-         sta   t1+6
-         pla
-         sta   t1+8
-         phy
-         phx
-         plb
-
-         ph4   #t1                      compute the value
-         FRINTX
-         
-         ldx   #^t1                     return a pointer to the result
-         lda   #t1
-         rtl
+         lda   #$0148
+         brl   ~DOFPEFUNCTION
          end
 
 ****************************************************************

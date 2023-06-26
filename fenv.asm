@@ -58,7 +58,7 @@ lb5      rol   excepts
 
          FGETENV                        OR in FPE exceptions with SANE env word
          txa
-         ora   space
+         ora   excepts-1
          tax                            leave results in X+Y regs, like SANE
          xba
          and   #$00FF

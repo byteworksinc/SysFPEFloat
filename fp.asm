@@ -349,8 +349,6 @@ command  equ   $C088                    disp to the FPE command register
 operand  equ   $C08C                    disp to the FPE operand register
 response equ   $C080                    disp to the FPE response register
 
-save     equ   $0068                    op code for save of FPE0 to extended
-
 val      equ   5                        start of value on stack
 
          phb                            set up for abs addressing to bank 0
@@ -422,8 +420,6 @@ FPEslot  ds    2                        FPE slot displacement
 command  equ   $C088                    disp to the FPE command register
 operand  equ   $C08C                    disp to the FPE operand register
 response equ   $C080                    disp to the FPE response register
-
-save     equ   $0068                    op code for save of FPE0 to extended
 
 val      equ   5                        start of value on stack
 

@@ -474,6 +474,7 @@ lb3      lda   response
 ;
 ;  Local data
 ;
+~FPEslot4 entry
 FPEslot  ds    2                        FPE slot displacement
          end
 
@@ -509,7 +510,68 @@ SetFPESlot start
          lda   #$0088
          jsl   ~SETFPECONTROLREG
 
+         stz   ~FPEslot4
+
          plb
+         rtl
+         end
+
+****************************************************************
+*
+*  FindFPESlot - Find the FPE slot number
+*
+*  Outputs:
+*        A - slot number
+*
+****************************************************************
+*
+FindFPESlot private
+         using ~FPECommon
+
+         ldx   #$0700                   for slot 7 down to slot 1
+loop     short M                          check for FPE ID bytes
+         lda   $E0C005,x
+         cmp   #$38
+         bne   next
+         lda   $E0C007,x
+         cmp   #$18
+         bne   next
+         lda   $E0C00B,x
+         cmp   #$01
+         bne   next
+         lda   $E0C00C,x
+         cmp   #$AF
+next     long  M
+         beq   done                       if found, return slot number
+         txa
+         xba
+         dec   a
+         xba
+         tax
+         bne   loop
+
+         ldx   #$0300                   assume slot 3 if not found
+done     txa
+         xba
+         rtl
+         end
+
+****************************************************************
+*
+*  ~InitFloat - Initialize the FPE
+*
+*  Inputs:
+*        A - FPE slot number (0 to autodetect)
+*
+****************************************************************
+*
+~InitFloat start
+
+         tax
+         bne   lb1
+         jsl   FindFPESlot
+lb1      pha
+         jsl   SetFPESlot
          rtl
          end
 

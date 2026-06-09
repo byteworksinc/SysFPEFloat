@@ -18,6 +18,8 @@ fenv     private                        dummy segment
 
 FE_ALL_EXCEPT gequ $001F
 
+FE_CONTROL_MODES gequ $C0DF             mask of control modes in environment
+
 ****************************************************************
 *
 *  ~GETENV - Get floating-point environment
@@ -276,6 +278,33 @@ fetestexcept start
 
 ****************************************************************
 *
+*  int fetestexceptflag(fexcept_t *flagp, int excepts);
+*
+*  Test if floating-point exception flags are set in *flagp
+*
+*  Inputs:
+*        flagp - pointer to stored exception flags
+*        excepts - floating-point exceptions to test
+*
+*  Outputs:
+*        Bitwise or of exceptions that are set
+*
+****************************************************************
+
+fetestexceptflag start
+
+         csubroutine (4:flagp,2:excepts),0
+
+         lda   [flagp]                  get stored exception flags
+         and   excepts                  mask to just the ones we want
+         and   #FE_ALL_EXCEPT
+         sta   excepts
+         
+         creturn 2:excepts
+         end
+
+****************************************************************
+*
 *  int fegetround(void);
 *
 *  Get the current rounding direction
@@ -354,6 +383,32 @@ fegetenv start
 
 ****************************************************************
 *
+*  int fegetmode(femode_t *modep);
+*
+*  Get the current floating-point control modes
+*
+*  Inputs:
+*        modep - pointer to location to store control modes
+*
+*  Outputs:
+*        Returns 0 if successful, non-zero otherwise
+*
+****************************************************************
+*
+fegetmode start
+
+         csubroutine (4:modep),0
+         
+         jsr   ~GETENV                  get the environment
+         txa
+         and   #FE_CONTROL_MODES        mask to only control modes
+         sta   [modep]                  store it in *modep
+         
+         creturn 2:#0
+         end
+
+****************************************************************
+*
 *  int feholdexcept(fenv_t *envp);
 *
 *  Get environment, then clear status flags and disable halts
@@ -403,6 +458,38 @@ fesetenv start
          pha
          jsr   ~SETENV
 
+         creturn 2:#0
+         end
+
+****************************************************************
+*
+*  int fesetmode(const femode_t *modep);
+*
+*  Set the floating-point control modes
+*
+*  Inputs:
+*        modep - pointer to control modes to set
+*
+*  Outputs:
+*        Returns 0 if successful, non-zero otherwise
+*
+****************************************************************
+*
+fesetmode start
+
+         csubroutine (4:modep),0
+         
+         lda   [modep]                  mask to only control modes
+         and   #FE_CONTROL_MODES
+         sta   modep
+         
+         jsr   ~GETENV                  get environment
+         txa
+         and   #$FFFF-FE_CONTROL_MODES  mask off existing control modes
+         ora   modep                    set new control modes
+         pha
+         jsr   ~SETENV
+         
          creturn 2:#0
          end
 
